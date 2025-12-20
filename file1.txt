@@ -1,1 +1,60 @@
-hello rohit
+
+Installation steps on ubuntu:
+
+
+sudo apt update
+
+sudo apt upgrade -y
+
+sudo apt install openjdk-21-jdk -y
+java -version
+
+
+
+curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
+
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+
+  https://pkg.jenkins.io/debian binary/ | sudo tee \
+
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+
+sudo apt update
+
+sudo apt install jenkins -y
+
+
+sudo systemctl status jenkins
+
+
+Jenkins home dir:
+
+ls /var/lib/jenkins/
+
+
+
+Freestyle Job:
+
+Create Your First Jenkins Job
+
+➤ Step 1: Click “New Item”
+Name: first-job
+
+
+Type: Freestyle project
+
+
+➤ Step 2: Configure Job
+Under Build → Add build step → Execute shell
+ Paste this:
+Whatever you want like:
+
+echo "Hello from Jenkins"
+
+Save and Build
+Click on the build number
+Open Console Output → See the result

@@ -1,0 +1,81 @@
+Jenkins: pipeline
+
+
+Step 1: Create a GitHub Repo
+Create a repo named devops-pipeline-demo
+ Add a file called Jenkinsfile with this content:
+
+pipeline {
+
+  agent any
+
+
+  stages {
+
+    stage('Build') {
+
+      steps {
+
+        echo 'Step 1: Building the application...'
+
+      }
+
+    }
+
+    stage('Test') {
+
+      steps {
+
+        echo 'Step 2: Running tests...'
+
+      }
+
+    }
+
+    stage('Deploy') {
+
+      steps {
+
+        echo 'Step 3: Deploying to staging...'
+
+      }
+
+    }
+
+  }
+
+}
+
+
+✅ Step 2: Create a New Pipeline Job in Jenkins
+Click New Item → Enter name → Select Pipeline
+
+
+In the configuration:
+
+
+Under “Pipeline script from SCM”:
+
+
+SCM: Git
+
+
+Repo URL: https://github.com/<your-username>/devops-pipeline-demo.git
+
+
+Branch: main
+
+
+Script path: Jenkinsfile
+
+
+Click Save
+
+✅ Step 3: Run the Job
+Click Build Now
+
+
+Go to Console Output
+
+
+You should see the 3 pipeline stages executing in order

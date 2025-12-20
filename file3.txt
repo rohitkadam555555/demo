@@ -1,0 +1,35 @@
+=====================================================================
+installation:
+
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 
+sudo install minikube-linux-amd64 /usr/local/bin/minikube 
+
+
+curl -LO https://dl.k8s.io/release/v1.33.0/bin/linux/amd64/kubectl
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+
+Kubectl version - -client
+
+===================================================================
+
+🔹 Start the cluster
+minikube start --driver=docker
+kubectl get nodes
+
+🔹 Deploy Nginx Pod using kubectl
+kubectl run nginx --image=nginx --port=80
+kubectl get pods
+
+✅ This creates a pod with a running nginx container
+
+
+🔹 Expose Nginx as a Service
+kubectl expose pod nginx --type=NodePort --port=80
+kubectl get services
+minikube service nginx --url
+
+
+
+
+✅ Opens Nginx web page via NodePort

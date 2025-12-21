@@ -1,0 +1,49 @@
+Dockerfile Example:
+
+# Use Ubuntu as base image
+FROM ubuntu:20.04
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+# Install NGINX
+RUN apt update && apt install -y nginx
+# Copy custom HTML file into the container
+COPY index.html /var/www/html/index.html
+# Start nginx in foreground
+CMD ["nginx", "-g", "daemon off;"]
+
+Also create an index.html file in the same folder:
+<h1>Hello from custom NGINX container!</h1>
+
+mkdir custom-nginx && cd custom-nginx
+docker build -t my-nginx-image .
+docker run -d -p 8080:80 my-nginx-image
+http://localhost:8080
+
+
+Volume Hands-On (Named Volume)
+
+docker volume create mydata
+docker run -d -p 8081:80 -v mydata:/usr/share/nginx/html nginx
+docker cp index.html <container_id>:/usr/share/nginx/html/index.html
+http://localhost:8081
+
+Bind Mount (Host Folder Mounting) 
+
+docker run -d -p 8084:80 -v $(pwd):/usr/share/nginx/html nginx
+✅ Any file change in your local folder will be reflected instantly in the browser.
+
+
+Push To DockerHub:
+docker login
+docker tag my-nginx-image yourusername/my-nginx-image
+docker push yourusername/my-nginx-image
+
+docker push yourusername/my-nginx-image
+Use it anywhere:
+docker pull yourusername/my-nginx-image
+docker run -d -p 8085:80 yourusername/my-nginx-image
+============================================================
+
+We can validate the volume by below command:
+
+docker inspect container-id

@@ -1,60 +1,37 @@
-
-Installation steps on ubuntu:
-
+Install Ansible on Ubuntu
 
 sudo apt update
-
-sudo apt upgrade -y
-
-sudo apt install openjdk-21-jdk -y
-java -version
+sudo apt install ansible -y
 
 
 
-curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
+Inventory File (hosts)
+Ansible uses an inventory file to know which machines to manage.
+Create hosts file:
+[web]
+your local server ip or hostname
 
-  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+Run Your First Command (Ping)
+ansible -i hosts all -m ping
 
+Write a Basic Playbook
+Create playbook.yml:
+---
+- name: Install and Start Nginx
+  hosts: web
+  become: true
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: true
 
-echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+    - name: Start Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: true
 
-  https://pkg.jenkins.io/debian binary/ | sudo tee \
-
-  /etc/apt/sources.list.d/jenkins.list > /dev/null
-
-
-sudo apt update
-
-sudo apt install jenkins -y
-
-
-sudo systemctl status jenkins
-
-
-Jenkins home dir:
-
-ls /var/lib/jenkins/
-
-
-
-Freestyle Job:
-
-Create Your First Jenkins Job
-
-➤ Step 1: Click “New Item”
-Name: first-job
-
-
-Type: Freestyle project
-
-
-➤ Step 2: Configure Job
-Under Build → Add build step → Execute shell
- Paste this:
-Whatever you want like:
-
-echo "Hello from Jenkins"
-
-Save and Build
-Click on the build number
-Open Console Output → See the result
+🔸 7. Run the Playbook
+ansible-playbook -i hosts playbook.yml

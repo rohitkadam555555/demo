@@ -1,0 +1,124 @@
+Step 1: Pull the SonarQube Docker Image
+docker pull sonarqube:lts
+
+Step 2: Run SonarQube Container
+
+docker run -d --name sonarqube \
+  -p 9000:9000 \
+  -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true \
+  sonarqube:lts
+
+
+
+Manually Install & Add to System Path 
+
+# 1. Download SonarScanner
+cd /opt
+sudo wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+
+# 2. Extract it
+sudo apt install unzip -y
+sudo unzip sonar-scanner-cli-*.zip
+sudo mv sonar-scanner-*/ sonar-scanner
+
+# 3. Add to PATH for Jenkins
+echo 'export PATH=$PATH:/opt/sonar-scanner/bin' | sudo tee /etc/profile.d/sonar-scanner.sh
+chmod +x /etc/profile.d/sonar-scanner.sh
+
+# 4. Apply path
+source /etc/profile.d/sonar-scanner.sh
+
+# 5. Restart Jenkins
+sudo systemctl restart jenkins
+
+http://localhost:9000
+Create a Project & Generate Token in SonarQube
+Go to SonarQube → Projects → Create Project
+
+
+Give a name (e.g., demo-app)
+
+
+Click Manually
+
+
+Give a project key (same name is okay)
+
+
+Generate a token (save it)
+
+Install SonarQube Plugin in Jenkins
+Go to Jenkins → Manage Jenkins → Manage Plugins
+
+
+Go to Available tab
+
+
+Search for: SonarQube Scanner
+
+
+✅ Install it
+
+
+Restart Jenkins if needed
+
+✅ 1. SonarQube Configuration in Jenkins
+Go to: Manage Jenkins → Configure System
+
+
+Under SonarQube Servers
+
+
+Name: MySonarQube
+
+
+Server URL: http://localhost:9000
+
+
+Add credentials: paste Sonar token
+
+
+✅ Enable injection of server configuration
+
+
+✅ 2. SonarQube Scanner Tool
+Go to: Manage Jenkins → Global Tool Configuration
+
+
+Add SonarQube Scanner → Name: Default → ✅ Install automatically
+
+
+
+
+Jenkinsfile:
+
+pipeline {
+  agent any
+
+  environment {
+    SONAR_TOKEN = credentials('sonar-token')   // Use Jenkins secret for secure auth
+    PATH = "/opt/sonar-scanner/bin:$PATH"      // Add sonar-scanner to Jenkins environment
+  }
+
+  stages {
+    stage('Setup and Scan') {
+      steps {
+        sh '''
+          mkdir -p demo-app
+          cd demo-app
+
+          echo "console.log('Hello from Jenkins local pipeline');" > index.js
+
+          cat <<EOF > sonar-project.properties
+sonar.projectKey=local-app
+sonar.sources=.
+sonar.host.url=http://localhost:9000
+sonar.login=$SONAR_TOKEN
+EOF
+
+          sonar-scanner
+        '''
+      }
+    }
+  }
+}

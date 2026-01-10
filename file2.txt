@@ -79,3 +79,5 @@ Go to Console Output
 
 
 You should see the 3 pipeline stages executing in order
+sudo rm -f /etc/apt/sources.list.d/jenkins.list
+sudo rm -f /usr/share/keyrings/jenkins-keyring.asc
